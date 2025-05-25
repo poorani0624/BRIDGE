@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Bridge - Update Item</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f0f2f5;
+      margin: 0;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .wrapper {
+      display: flex;
+      width: 900px;
+      height: 520px;
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0px 4px 10px rgba(0,0,0,0.1);
+      background-color: white;
+    }
+
+    .illustration {
+      flex: 1;
+      background-color: #2f4f4f;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+    }
+
+    .illustration img {
+      max-width: 90%;
+      height: auto;
+    }
+
+    .container {
+      flex: 1;
+      padding: 30px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    h2 {
+      font-size: 24px;
+      margin-bottom: 10px;
+      color: #333;
+      text-align: center;
+    }
+
+    .update-title {
+      font-size: 18px;
+      color:#444;
+      font-weight: bold;
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    /* New scrollable product list */
+    .product-list {
+      flex: 1;              /* fill available vertical space */
+      overflow-y: auto;     /* vertical scrollbar if overflow */
+      padding-right: 5px;   /* prevent scrollbar overlap */
+      margin-bottom: 15px;
+    }
+
+    .item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 12px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid #ccc;
+    }
+
+    .item img {
+      width: 45px;
+      height: 45px;
+      object-fit: cover;
+      border-radius: 5px;
+      margin-right: 10px;
+    }
+
+    .item span {
+      flex: 1;
+      text-align: left;
+      font-size: 15px;
+      font-weight: 500;
+      color: #444;
+    }
+
+    .buttons {
+      display: flex;
+      gap: 5px;
+    }
+
+    .btn {
+      padding: 6px 10px;
+      font-size: 13px;
+      border-radius: 5px;
+      border: none;
+      cursor: pointer;
+      background-color: #2f4f4f;
+      color: white;
+      transition: background-color 0.3s;
+    }
+
+    .btn:hover {
+      background-color: #0056b3;
+    }
+
+    .logout-btn {
+      margin-top: 30px;
+      padding: 10px;
+      width: 100%;
+      background-color: #003B46;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      font-size: 15px;
+      cursor: pointer;
+      text-align: center;
+      text-decoration: none;
+      display: inline-block;
+    }
+
+    .logout-btn:hover {
+      background-color: #005f66;
+    }
+  </style>
+</head>
+<body>
+
+<div class="wrapper">
+  <div class="illustration">
+    <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Bridge Logo">
+  </div>
+
+  <div class="container">
+    <h2>Bridge</h2>
+    <div class="update-title">Update Item</div>
+
+    <div class="product-list">
+      {% if products %}
+        {% for product in products %}
+        <div class="item">
+          <img src="{{ url_for('static', filename='images/' + product.image) }}" alt="{{ product.name }}">
+          <span>{{ product.name }} (Qty: {{ product.quantity }})</span>
+
+          <div class="buttons">
+            <form action="{{ url_for('update_quantity', product_id=product.id, action='decrease') }}" method="POST">
+              <button type="submit" class="btn">-</button>
+            </form>
+
+            <form action="{{ url_for('update_quantity', product_id=product.id, action='increase') }}" method="POST">
+              <button type="submit" class="btn">+</button>
+            </form>
+
+            <form action="{{ url_for('delete_product', product_id=product.id) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete this product?');">
+              <button type="submit" class="btn">Delete</button>
+            </form>
+          </div>
+        </div>
+        {% endfor %}
+      {% else %}
+        <p>No products uploaded yet. Start adding some!</p>
+      {% endif %}
+    </div>
+
+    <!-- Logout Button -->
+    <a href="{{ url_for('logout') }}" class="logout-btn">Logout</a>
+  </div>
+</div>
+
+</body>
+</html>

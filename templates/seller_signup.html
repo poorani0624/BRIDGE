@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Seller Sign Up</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .signup-wrapper {
+            display: flex;
+            background: #f5a623;
+            width: 800px;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+        .illustration {
+            background: #2f4f4f;
+            padding: 50px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex: 1;
+        }
+        .illustration img {
+            max-width: 100%;
+            height: auto;
+        }
+        .signup-container {
+            background: white;
+            padding: 40px;
+            width: 300px;
+            text-align: center;
+        }
+        .signup-container h2 {
+            margin-bottom: 10px;
+            font-size: 22px;
+            color: #333;
+        }
+        .input-group {
+            margin-bottom: 15px;
+            text-align: left;
+        }
+        .input-group input {
+            width: 92%;
+            padding: 10px;
+            margin-top: 5px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        .otp-button {
+            width: 100%;
+            padding: 10px;
+            background: #2f4f4f;
+            border: none;
+            color: white;
+            font-size: 14px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .otp-button:hover {
+            background: #253b3b;
+        }
+        .flash-message {
+            margin-bottom: 15px;
+            padding: 10px;
+            color: white;
+            background-color: #e74c3c;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="signup-wrapper">
+        <div class="illustration">
+            <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Bridge Logo">
+        </div>
+        <div class="signup-container">
+            <h2>Bridge</h2>
+            <h3>SELLER SIGN UP</h3>
+            <p>Create an Account</p>
+
+            {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+              {% for category, message in messages %}
+                <div class="flash-message">{{ message }}</div>
+              {% endfor %}
+            {% endif %}
+          {% endwith %}
+
+            <form action="{{ url_for('seller_signup') }}" method="POST">
+               
+                <!-- Seller Name -->
+                <div class="input-group">
+                    <input type="text" id="seller_name" name="seller_name" placeholder="Seller Name" pattern="[A-Za-z ]+" title="Only letters and spaces allowed" required>
+                </div>
+
+                <!-- Email -->
+                <div class="input-group">
+                    <input type="email" id="email" name="email" placeholder="Email ID" required>
+                </div>
+
+                <div class="input-group" style="display: flex; gap: 5px;">
+                    <select name="country_code" style="width: 30%; padding: 10px; border-radius: 5px; border: 1px solid #ccc;">
+                        <option value="+91">+91 🇮🇳 India</option>
+                        <option value="+1">+1 🇺🇸 United States </option>
+                        <option value="+44">+44 🇬🇧 United Kingdom</option>
+                        <option value="+61">+61 🇦🇺 Australia</option>
+                        <option value="+971">+971 🇦🇪 United Arab</option>
+                        <option value="+60">+60 🇲🇾 Malaysia</option>
+                        <option value="+65">+65 🇸🇬 Singapore</option>
+                        <!-- Add more as needed -->
+                     </select>
+                   <input type="text" name="phone" pattern="\d{10}" title="Enter a 10-digit phone number" required>
+                </div>
+
+                <!-- Work Location -->
+                <div class="input-group">
+                    <input type="text" id="store_location" name="store_location" placeholder="Store Location" pattern="[A-Za-z ]+" title="Only letters and spaces allowed" required>
+                </div>
+
+                <!-- Password -->
+                <div class="input-group">
+                   <input type="password" id="password" name="password" placeholder="Password"
+       pattern="^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$"
+       title="Password must be at least 8 characters long and include at least one letter, one number, and one special character"
+       required>
+
+                </div>
+
+                <!-- Confirm Password -->
+                <div class="input-group">
+                    <input type="password" id="confirm_password" name="confirm_password" placeholder="Re-Confirm Password"
+       pattern="^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$"
+       title="Password must match the format: at least 8 characters, including a letter, number, and special character"
+       required>
+
+                </div>
+                            
+                <!-- Submit Button -->
+                <button type="submit" class="otp-button">Sign Up</button>
+            </form>
+        </div>
+    </div>
+</body>
+</html>

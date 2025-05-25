@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkout</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #FFFFFF;
+            text-align: center;
+            padding: 0;
+            margin: 0;
+        }
+        .header {
+            background: #003B46;
+            color: white;
+            padding: 15px 20px;
+            font-size: 24px;
+            font-weight: bold;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .logout-button {
+            background-color: #005C67;
+            color: white;
+            border: none;
+            padding: 10px 16px;
+            font-size: 14px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        .logout-button:hover {
+            background-color: #002f36;
+        }
+        .container {
+            max-width: 600px;
+            margin: auto;
+            text-align: left;
+            padding: 20px;
+        }
+        .product {
+            display: flex;
+            align-items: center;
+            margin: 10px 0;
+        }
+        .product img {
+            width: 50px;
+            height: 50px;
+            margin-right: 10px;
+            background: #ccc;
+        }
+        .payment-options {
+            margin: 15px 0;
+        }
+        .payment-options label {
+            margin-right: 15px;
+        }
+        .confirm-button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        .footer {
+            background: #003B46;
+            color: white;
+            padding: 20px;
+            margin-top: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 8px;
+        }
+        .footer-content {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+    
+        .footer-content img {
+            height: 150px;
+            width: 150px;
+            object-fit: contain;
+            border-radius: 5px;
+            padding: 5px;
+        }
+
+        .footer-text {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        hr {
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+
+<!-- Header with Logout -->
+<div class="header">
+    <div class="header">Bridge - Checkout</div>
+    <button class="logout-button" onclick="logout()">Logout</button>
+</div>
+
+<div class="container">
+    <h2>Bridge</h2>
+    <h3>Checkout</h3>
+
+    <!-- Checkout Form -->
+    <form method="POST">
+        <div class="product">
+            <!-- Display Product Image -->
+            <img src="{{ url_for('static', filename='images/' + product.image) }}" alt="Product Image">
+            <strong>{{ product.name }}</strong>
+        </div>
+
+        <p><strong>Quantity: {{ quantity }}</strong></p>
+        <p><strong>Total Price: ₹ {{ total_price }}</strong></p>
+
+        <p><strong>Delivery Details: 2-3 working days</strong></p>
+
+        <label for="address"><strong>Enter Shipping Address:</strong></label><br>
+        <textarea name="address" id="address" rows="3" cols="50" required>{{ address.address_line if address else '' }}</textarea><br>
+        <label for="city"><strong>City:</strong></label><br>
+        <input type="text" name="city" id="city" value="{{ address.city if address else '' }}" required><br>
+        <label for="postal_code"><strong>Postal Code:</strong></label><br>
+        <input type="text" name="postal_code" id="postal_code" value="{{ address.postal_code if address else '' }}" required><br>
+        <label for="state"><strong>State:</strong></label><br>
+        <input type="text" name="state" id="state" value="{{ address.state if address else '' }}" required><br>
+
+        <h3>Payment Options</h3>
+        <div class="payment-options">
+            <input type="radio" name="payment" id="credit-card" value="Credit Card"> <label for="credit-card">Credit Card</label>
+            <input type="radio" name="payment" id="debit-card" value="Debit Card"> <label for="debit-card">Debit Card</label>
+            <input type="radio" name="payment" id="paypal" value="PayPal"> <label for="paypal">PayPal</label>
+            <input type="radio" name="payment" id="net-banking" value="Net Banking"> <label for="net-banking">Net Banking</label>
+        </div>
+
+        <hr>
+
+        <button class="confirm-button" type="submit">Confirm and Pay</button>
+    </form>
+</div>
+
+<!-- Footer -->
+<div class="footer">
+    <div class="footer-content">
+        <img src="{{ url_for('static', filename='bridge_logo.png') }}" alt="Bridge Logo">
+        <div class="footer-text">
+            <p style="font-size: 14px; font-weight: bold;">Thank You for Shopping</p>
+            <p style="font-size: 12px;">CONTACT US | 9875879104 | bridgeus@gmail.com</p>
+            <p style="margin-top: 10px; font-size: 12px;">All rights reserved © 2025 BRIDGE</p>
+        </div>
+    </div>
+</div>
+
+<script>
+    function logout() {
+        window.location.href = "/logout";
+    }
+</script>
+
+</body>
+</html>

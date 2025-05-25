@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Seller Login</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .login-wrapper {
+            display: flex;
+            background: #f5a623;
+            width: 800px;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+        .illustration {
+            background: #2f4f4f;
+            padding: 50px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex: 1;
+        }
+        .illustration img {
+            max-width: 100%;
+            height: auto;
+        }
+        .login-container {
+            background: white;
+            padding: 40px;
+            width: 300px;
+            text-align: center;
+        }
+        .login-container h2 {
+            margin-bottom: 20px;
+            font-size: 20px;
+            color: #333;
+        }
+        .input-group {
+            margin-bottom: 15px;
+            text-align: left;
+        }
+        .input-group input {
+            width: 92%;
+            padding: 10px;
+            margin-top: 5px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        .login-button {
+            width: 100%;
+            padding: 10px;
+            background: #2f4f4f;
+            border: none;
+            color: white;
+            font-size: 16px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .login-button:hover {
+            background: #1e3a3a;
+        }
+        .extra-links {
+            margin-top: 10px;
+            font-size: 14px;
+        }
+        .extra-links a {
+            color: #2f4f4f;
+            text-decoration: none;
+        }
+        .flash-messages {
+            color: red;
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-wrapper">
+        <div class="illustration">
+            <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Bridge Logo">
+        </div>
+        <div class="login-container">
+            <h2>BRIDGE</h2>
+            <h3>SELLER LOGIN</h3>
+
+            <!-- Display Flash Messages -->
+            {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <div class="flash-messages">
+                    {% for category, message in messages %}
+                        <p class="{{ category }}">{{ message }}</p>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+
+            <!-- Login Form -->
+            <form action="{{ url_for('seller_login') }}" method="POST">
+                <div class="input-group">
+                    <input type="email" name="email" placeholder="Email ID" required title="Enter your registered email" autocomplete="email">
+                </div>
+                <div class="input-group">
+                    <input type="password" name="password" placeholder="Password" required title="Enter your password" minlength="6" autocomplete="current-password">
+                </div>                             
+                <button type="submit" class="login-button">Login</button>
+            </form>
+
+            <div class="extra-links">
+                <p>Don't have an account? <a href="{{ url_for('seller_signup') }}">Sign up here</a></p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

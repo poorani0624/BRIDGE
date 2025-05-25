@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Item</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            background-color: #f0f2f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .wrapper {
+            display: flex;
+            width: 1000px;
+            height: 520px;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            background-color: white;
+        }
+
+        .illustration {
+            flex: 1;
+            background-color: #2f4f4f;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .illustration img {
+            max-width: 90%;
+            height: auto;
+        }
+
+        .container {
+            flex: 1;
+            padding: 35px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .title {
+            font-size: 24px;
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 5px;
+            color: #333;
+        }
+
+        h2 {
+            font-size: 20px;
+            margin-bottom: 15px;
+            text-align: center;
+            color: #333;
+        }
+
+        input, textarea, button {
+            width: 100%;
+            margin-bottom: 10px;
+            padding: 10px;
+            font-size: 15px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+
+        textarea {
+            height: 60px;
+            resize: none;
+        }
+
+        button {
+            background-color: #003B46;
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-size: 15px;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #005f66;
+        }
+
+        p.label {
+            margin: 5px 0 0;
+            font-weight: bold;
+            font-size: 14px;
+            color: #444;
+        }
+
+        .update-link {
+            text-align: center;
+            margin-top: 10px;
+            font-size: 14px;
+        }
+
+        .update-link a {
+            color: #003B46;
+            text-decoration: none;
+            font-weight: none;
+        }
+        
+    </style>
+</head>
+<body>
+
+<div class="wrapper">
+    <div class="illustration">
+        <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Bridge Logo">
+    </div>
+    <div class="container">
+        <div class="title">Bridge</div>
+        <h2>Add Item</h2>
+        <form method="POST">
+            <input type="text" name="productName" placeholder="Product Name" required>
+            <p class="label">Image URL</p>
+            <input type="text" name="productImage" placeholder="Image Link" required>
+
+            <p class="label">Category</p>
+    <select name="productCategory" required>
+        <option value="" disabled selected>Select Category</option>
+        <option value="Clothing">Clothing</option>
+        <option value="Handicrafts">Handicrafts</option>
+        <option value="Jewelry">Jewelry</option>
+        <option value="Home Decor">Home Decor</option>
+        <option value="Nuts and Spices">Nuts and Spices</option>
+        <option value="Homemade">Homemade</option>
+        <option value="Other">Other</option>
+    </select>
+            <textarea name="productDescription" placeholder="Product Description" required></textarea>
+            <input type="number" name="productPrice" placeholder="Price Quoted" required>
+            <input type="number" name="productQuantity" placeholder="Quantity Available" required>
+            <button type="submit">Add Item</button>
+        </form>
+        <div class="update-link">
+            Want to update an item? <a href="/update_item">Update here</a>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

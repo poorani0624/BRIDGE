@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Your Cart</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f4;
+      padding: 0;
+      margin: 0;
+    }
+
+    /* Header Styles */
+    .header {
+      background-color: #003B46;
+      padding: 20px 15px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      color: white;
+    }
+
+    .header .logo {
+      font-size: 16px;
+      font-weight: bold;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      margin: 0;
+    }
+
+    .nav-btn {
+      padding: 8px 16px;
+      background-color: #07575B;
+      color: white;
+      text-decoration: none;
+      border-radius: 6px;
+      margin-left: 10px;
+      font-size: 14px;
+    }
+
+    .nav-btn:hover {
+      background-color: #12696f;
+    }
+
+    .cart-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+      padding: 20px;
+      justify-content: flex-start;
+    }
+
+    .cart-item {
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      padding: 20px;
+      width: 260px;
+      text-align: center;
+    }
+
+    .cart-item img {
+      width: 200px;
+      height: 200px;
+      object-fit: cover;
+      border-radius: 8px;
+    }
+
+    .cart-details h3 {
+      margin: 15px 0 5px 0;
+      font-weight: bold;
+    }
+
+    .cart-details p {
+      margin: 5px 0;
+    }
+
+    .quantity-input {
+      width: 50px;
+      padding: 5px;
+      margin-top: 8px;
+    }
+
+    .button-group {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    button {
+      padding: 6px 12px;
+      background-color: #003B46;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #07575B;
+    }
+
+    .cart-summary {
+      text-align: right;
+      font-size: 18px;
+      font-weight: bold;
+      margin: 20px 30px 40px;
+    }
+
+    .empty-cart-message {
+      font-size: 20px;
+      font-weight: bold;
+      color: #555;
+      text-align: center;
+      margin-top: 40px;
+    }
+     .custom-alert {
+  position: fixed;
+  top: 15%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: #2c2c2c;
+  color: #fff;
+  padding: 15px 20px;
+  border-radius: 12px;
+  box-shadow: 0 0 12px rgba(0, 0, 0, 0.5);
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  font-size: 16px;
+}
+
+.custom-alert button {
+  padding: 8px 16px;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.custom-alert button:hover {
+  background-color: #0056b3;
+}
+
+
+
+    /* Footer Styles */
+    .footer {
+      background-color: #004851;
+      color: white;
+      padding: 40px 20px;
+      display: flex;
+      justify-content: center;
+    }
+
+    .footer-content {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      flex-wrap: wrap;
+      max-width: 1000px;
+      width: 100%;
+      justify-content: center;
+    }
+
+    .footer-logo img {
+      height: 130px;
+      width: auto;
+    }
+
+    .footer-text {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .footer-text p {
+      margin: 6px 0;
+      font-size: 15px;
+    }
+    .footer-inner {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  max-width: 1000px;
+  width: 100%;
+}
+
+.footer-logo-text {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.footer-logo-text img {
+  height: 100px;
+  width: auto;
+}
+
+.footer-text {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+
+    .footer-text a {
+      text-decoration: none;
+      color: white;
+      transition: text-decoration 0.3s ease;
+    }
+
+    .footer-text a:hover {
+      text-decoration: underline;
+    }
+
+    @media (max-width: 768px) {
+      .container {
+        flex-direction: column;
+        padding: 20px;
+      }
+
+      .product-image img {
+        height: auto;
+      }
+
+      .footer-inner {
+        flex-direction: column;
+        gap: 20px;
+      }
+
+      .footer-logo img {
+        height: 100px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="header">
+    <h1 class="logo">BRIDGE</h1>
+    <div>
+      <a href="{{ url_for('logout') }}" class="nav-btn">Logout</a>
+    </div>
+  </div>
+{% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    {% for category, message in messages %}
+      {% if category == 'error' %}
+        <div class="custom-alert" id="alertBox">
+          <strong>{{ message }}</strong>
+          <button onclick="closeAlert()">OK</button>
+        </div>
+      {% endif %}
+    {% endfor %}
+  {% endif %}
+{% endwith %}
+
+
+  {% if cart_items %}
+    <div class="cart-container">
+      {% for item in cart_items %}
+      <div class="cart-item">
+        <img src="{{ url_for('static', filename='images/' + item['image']) }}" alt="{{ item['name'] }}">
+        <div class="cart-details">
+          <h3>{{ item.name }}</h3>
+          <p>Price: ₹{{ item.price }}</p>
+          <p>Subtotal: ₹{{ item.price * item.quantity }}</p>
+          <form action="{{ url_for('update_cart', product_id=item[0]) }}" method="POST">
+            <label for="quantity">Qty:</label>
+            <input type="number" name="quantity" value="{{ item['quantity'] }}" min="1" class="quantity-input">
+
+            <div class="button-group">
+              <button type="submit">Update</button>
+          </form>
+          <form action="{{ url_for('remove_from_cart', product_id=item[0]) }}" method="POST">
+              <button type="submit">Remove</button>
+          </form>
+          <form action="{{ url_for('checkout', product_id=item[0]) }}" method="GET">
+              <button type="submit">Buy Now</button>
+          </form>
+            </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+    <div class="cart-summary">
+      Total Price: ₹{{ total }}
+    </div>
+  {% else %}
+    <div class="empty-cart-message">
+      🛒 Your cart is currently empty.<br>
+      Start adding some amazing products!
+    </div>
+  {% endif %}
+
+ <div class="footer">
+  <div class="footer-inner">
+    <div class="footer-logo-text">
+      <img src="{{ url_for('static', filename='images/logo.png') }}" alt="BRIDGE Logo">
+      <div class="footer-text">
+        <p><strong>Thank You for Shopping</strong></p>
+        <p>CONTACT US | <a href="tel:+9875879104">9875879104</a> | <a href="mailto:bridgeus@gmail.com">bridgeus@gmail.com</a></p>
+        <p>All rights reserved © 2025 BRIDGE</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  function closeAlert() {
+    document.getElementById('alertBox').style.display = 'none';
+}
+</script>
+
+</body>
+</html>

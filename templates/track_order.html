@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Track Orders</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            padding: 0;
+            margin: 0;
+        }
+
+        header {
+            background-color: #2c4c4c;
+            color: white;
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .header-title {
+            font-size: 24px;
+            font-weight: bold;
+            margin-left: 20px;
+        }
+
+        nav {
+            margin-right: 20px;
+        }
+
+        .nav-btn {
+            background-color: #07575B;
+            color: white;
+            border: none;
+            padding: 10px 18px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: bold;
+            margin-left: 10px;
+            transition: background-color 0.3s;
+        }
+
+        .nav-btn:hover {
+            background-color: #66A5AD;
+        }
+
+        h2 {
+            text-align: center;
+            margin: 30px 0;
+            color: #333;
+        }
+
+        .order-card {
+            background-color: #fff;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px auto;
+            max-width: 700px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            display: flex;
+            gap: 20px;
+            align-items: center;
+            cursor: pointer;
+            transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+        }
+
+        .order-card:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+        }
+
+        .order-image {
+            width: 100px;
+            height: 100px;
+            object-fit: cover;
+            border-radius: 4px;
+            flex-shrink: 0;
+        }
+
+        .order-info {
+            flex: 1;
+        }
+
+        .order-info h3,
+        .order-info p,
+        .order-info strong {
+            text-decoration: none;
+        }
+
+        .order-info h3 {
+            color: #007bff;
+            margin-bottom: 10px;
+        }
+
+        .order-info p {
+            margin: 8px 0;
+            color: #555;
+        }
+
+        .order-info strong {
+            color: #333;
+        }
+
+        .status {
+            font-weight: bold;
+            transition: color 0.3s ease;
+        }
+
+        .status.pending {
+            color: #ffc107;
+        }
+
+        .status.completed {
+            color: #28a745;
+        }
+
+        .status.cancelled {
+            color: #dc3545;
+        }
+
+        hr {
+            border: 0;
+            border-top: 1px solid #ddd;
+            margin-top: 20px;
+        }
+
+        footer {
+            background-color: #003b44;
+            color: white;
+            text-align: center;
+            padding: 20px 0;
+            margin-top: 40px;
+        }
+
+        footer img {
+            width: 120px;
+            height: auto;
+            margin-bottom: 10px;
+        }
+
+        .footer-text {
+            text-align: center;
+            max-width: 400px;
+        }
+
+        .footer-text h3 {
+            margin-bottom: 10px;
+            font-size: 20px;
+        }
+
+        .footer-text a:hover {
+            text-decoration: underline;
+        }
+
+        .footer-text p {
+            margin: 5px 0;
+            font-size: 14px;
+        }
+
+        .footer-text a {
+            text-decoration: none;
+            color: white;
+            transition: text-decoration 0.3s ease;
+        }
+
+        footer p {
+            margin: 5px 0;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-title">BRIDGE - Track Orders</div>
+        <nav>
+            <a href="{{ url_for('dashboard') }}" class="nav-btn">Dashboard</a>
+            <a href="{{ url_for('logout') }}" class="nav-btn">Logout</a>
+        </nav>
+    </header>
+
+    <div class="container">
+        <h2>Your Orders</h2>
+        {% for order in orders %}
+        <div class="order-card" onclick="window.location.href=`{{ url_for('tracking') }}?order_id={{ order.order_id }}`;">
+            <img src="{{ url_for('static', filename='images/' + (order.product_image if order.product_image else 'default.jpg')) }}" alt="Product Image" class="order-image">
+
+            <div class="order-info">
+                <h3>Order ID: {{ order.order_id }}</h3>
+                <p><strong>Product Name:</strong> {{ order.product_name }}</p>
+                <p><strong>Price:</strong> ₹{{ order.product_price }}</p>
+                <p><strong>Payment Method:</strong> {{ order.payment_method }}</p>
+                <p><strong>Quantity Ordered:</strong> {{ order.quantity }}</p>
+
+                <p><strong>Order Date:</strong> {{ order.order_date }}</p>
+                <p class="status {% if order.status == 'Order Placed' %}pending{% elif order.status == 'Completed' %}completed{% elif order.status == 'Cancelled' %}cancelled{% endif %}">
+                    <strong>Status:</strong> {{ order.status }}
+                </p>
+            </div>
+        </div>
+        <hr>
+        {% else %}
+            <p style="text-align:center;">No orders found.</p>
+        {% endfor %}
+    </div>
+
+    <footer>
+        <div style="display: flex; align-items: center; justify-content: center; gap: 20px; flex-wrap: wrap;">
+            <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Bridge Logo" style="width: 100px; height: auto;">
+            <div class="footer-text">
+                <h3>Thank You for Shopping</h3>
+                <p>CONTACT US | <a href="tel:+9875879104">9875879104</a> | <a href="mailto:bridgeus@gmail.com">bridgeus@gmail.com</a></p>
+                <p>All rights reserved © 2025 BRIDGE</p>
+            </div>
+        </div>
+    </footer>
+
+</body>
+</html>

@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order Tracking</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #FFFFFF;
+            text-align: center;
+            padding: 0;
+        }
+        .header {
+            background: #003B46;
+            color: white;
+            padding: 15px;
+            font-size: 24px;
+            font-weight: bold;
+        }
+        nav {
+            background-color: #003B46;
+            padding: 10px 0;
+        }
+        nav ul {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            text-align: center;
+        }
+        nav ul li {
+            display: inline;
+            margin: 0 15px;
+        }
+        nav ul li a {
+            color: white;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        .container {
+            max-width: 600px;
+            margin: auto;
+            text-align: center;
+        }
+        .success-message {
+            font-size: 18px;
+            font-weight: bold;
+            color: green;
+        }
+        .product {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 10px 0;
+        }
+        .product img {
+            width: 50px;
+            height: 50px;
+            margin-right: 10px;
+            background: #ccc;
+        }
+        .tracking {
+            margin-top: 20px;
+        }
+        .tracking p {
+            font-weight: bold;
+        }
+        .tracking-status {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 10px;
+        }
+        .tracking-status div {
+            text-align: center;
+        }
+        .footer {
+            background: #003B46;
+            color: white;
+            padding: 20px;
+            margin-top: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 8px;
+        }
+        .footer-content {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+        .footer-content img {
+            width: 100px;
+            height: auto;
+        }
+        .footer-text {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header -->
+    <div class="header">Bridge - Order Tracking</div>
+
+    <!-- Navigation -->
+    <nav>
+        <ul>
+            <li><a href="{{ url_for('dashboard') }}">Dashboard</a></li>
+            <li><a href="{{ url_for('logout') }}">Logout</a></li>
+        </ul>
+    </nav>
+
+    <div class="container">
+        <h2>Bridge</h2>
+        <p class="success-message">Order Status Update</p>
+        <p>Order ID: <strong>#{{ order_id }}</strong></p>
+
+        {% if product %}
+        <div class="product">
+            <img src="{{ url_for('static', filename='images/' + product.image) }}" alt="Product Image">
+            <strong>{{ product.name }}</strong>
+        </div>
+        {% if quantity %}
+<p><strong>Quantity Ordered:</strong> {{ quantity }}</p>
+{% endif %}
+        {% else %}
+        <p><strong>Product information is unavailable.</strong></p>
+        {% endif %}
+
+        <hr>
+
+        <p><strong>Estimated Delivery Date: {{ estimated_delivery if estimated_delivery else 'To be updated' }}</strong></p>
+
+        <p><strong>Shipping Address:</strong> {{ address }}</p>
+
+        <div class="tracking-status">
+            <div>
+                <strong>{{ '✔' if status in ['Order Placed', 'Dispatched', 'Halfway Through', 'Delivered'] else '•' }}</strong><br>
+                Order Placed
+                {% if status == 'Order Placed' %}
+                <span style="color: green;">(Current)</span>
+                {% endif %}
+            </div>
+            <div>
+                <strong>{{ '✔' if status in ['Dispatched', 'Halfway Through', 'Delivered'] else '•' }}</strong><br>
+                Dispatched
+                {% if status == 'Dispatched' %}
+                <span style="color: green;">(Current)</span>
+                {% endif %}
+            </div>
+            <div>
+                <strong>{{ '✔' if status in ['Halfway Through', 'Delivered'] else '•' }}</strong><br>
+                Halfway Through
+                {% if status == 'Halfway Through' %}
+                <span style="color: green;">(Current)</span>
+                {% endif %}
+            </div>
+            <div>
+                <strong>{{ '✔' if status == 'Delivered' else '•' }}</strong><br>
+                Delivered
+                {% if status == 'Delivered' %}
+                <span style="color: green;">(Current)</span>
+                {% endif %}
+            </div>
+        </div>
+
+        <hr>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer">
+        <div class="footer-content">
+            <img src="{{ url_for('static', filename='images/logo.png') }}" alt="BRIDGE Logo">
+            <div class="footer-text">
+                <p style="font-size: 14px; font-weight: bold;">Thank You for Shopping</p>
+                <p style="font-size: 12px;">CONTACT US | 9875879104 | bridgeus@gmail.com</p>
+                <p style="margin-top: 10px; font-size: 12px;">All rights reserved © 2025 BRIDGE</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Function to update the order status
+        function updateStatus(status) {
+            const orderId = "{{ order_id }}";
+            fetch(`/update_order_status/${orderId}`, {
+                method: 'POST',
+                body: JSON.stringify({ status: status }),
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert(`Order status updated to ${status}`);
+                    location.reload(); // Reload the page to reflect the updated status
+                } else {
+                    alert('Failed to update status. Please try again.');
+                }
+            })
+            .catch(err => {
+                console.error('Error:', err);
+                alert('Error updating status.');
+            });
+        }
+    </script>
+</body>
+</html>

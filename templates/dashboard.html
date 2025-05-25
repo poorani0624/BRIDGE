@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BRIDGE - Dashboard</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: white;
+            color: black;
+            margin: 0;
+            padding: 0 20px;
+        }
+
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #003B46;
+            color: white;
+            padding: 15px 20px;
+            box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .navbar-brand h1 {
+            font-size: 24px;
+            font-weight: bold;
+            margin: 0;
+        }
+
+        .search-bar {
+            display: flex;
+            gap: 10px;
+        }
+
+        .search-bar input {
+            width: 250px;
+            padding: 8px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+
+        .navbar div:last-child {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .navbar button {
+            padding: 8px 12px;
+            border-radius: 5px;
+            border: none;
+            background: #ddd;
+            cursor: pointer;
+        }
+
+        .navbar button:hover {
+            background: #bbb;
+        }
+
+        .product-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+
+        .category-section {
+    margin-top: 40px;
+}
+
+.category-title {
+    font-size: 20px;
+    font-weight: bold;
+    margin-bottom: 10px;
+    color: #333;
+    padding-left: 10px;
+}
+
+.product-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 20px;
+    margin-bottom: 40px;
+}
+
+.product-container.single {
+    display: flex;
+    justify-content: flex-start;
+}
+
+.product-card {
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    background: #f8f9fa;
+    transition: transform 0.2s;
+    cursor: pointer;
+    text-align: center;
+    width: 250px;
+}
+
+.product-card img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    border-radius: 8px;
+    margin-bottom: 10px;
+}
+        .product-card:hover {
+            transform: scale(1.05);
+        }
+
+       
+.product-category {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px; /* spacing between items */
+    justify-content: flex-start; /* ensures left alignment */
+}
+
+        .product-card h2 {
+            font-size: 18px;
+            font-weight: bold;
+            margin: 10px 0;
+        }
+
+        .footer {
+            background-color: #004851;
+            color: white;
+            padding: 30px 20px;
+        }
+
+        .footer-content {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 40px;
+            flex-wrap: wrap;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .footer-content img {
+            height: 150px;
+            width: 150px;
+            object-fit: contain;
+            border-radius: 5px;
+            padding: 5px;
+        }
+
+        .footer-text {
+            text-align: center;
+            max-width: 400px;
+        }
+
+        .footer-text h3 {
+            margin-bottom: 10px;
+            font-size: 20px;
+        }
+
+        .footer-text p {
+            margin: 5px 0;
+            font-size: 14px;
+        }
+
+        .footer-text a {
+            text-decoration: none;
+            color: white;
+            transition: text-decoration 0.3s ease;
+        }
+
+        .product-card a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .footer-text a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="navbar">
+        <div class="navbar-brand">
+            <h1>BRIDGE</h1>
+        </div>
+        <div class="search-bar">
+            <input type="text" id="searchInput" placeholder="Search products..." onkeyup="searchProducts()">
+        </div>
+        <div>
+            {% if session['role'] == 'buyer' %}
+                <a href="{{ url_for('track_orders') }}"><button >Track</button></a>
+                <a href="{{ url_for('cart') }}"><button>Cart</button></a>
+            {% endif %}
+            {% if session['role'] == 'seller' %}
+                <a href="{{ url_for('add_item') }}"><button>Sell</button></a>
+            {% endif %}
+            {% if session['user_id'] %}
+                <a href="{{ url_for('logout') }}"><button>Logout</button></a>
+            {% else %}
+                <a href="{{ url_for('login') }}"><button>Login</button></a>
+            {% endif %}
+        </div>        
+    </div>
+
+  {% for category, products in products_by_category.items() %}
+    <div class="category-section">
+        <h2 class="category-title">{{ category }}</h2>
+        <div class="product-container {{ 'single' if products|length == 1 else '' }}">
+            {% for product in products %}
+            <div class="product-card">
+                <a href="{{ url_for('product_view', product_id=product['id']) }}">
+                    <img src="{{ url_for('static', filename='images/' + product['image']) }}" alt="{{ product['name'] }}">
+                    <h2>{{ product['name'] }}</h2>
+                </a>
+                {% if session['role'] == 'seller' and product['seller_id'] == session['user_id'] %}
+                    <a href="{{ url_for('update_item', product_id=product['id']) }}">
+                        <button style="margin-top: 10px;">Edit</button>
+                    </a>
+                {% endif %}
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+{% endfor %}
+
+    <div class="footer">
+        <div class="footer-content">
+            <div class="footer-logo">
+                <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Bridge Logo">
+            </div>
+            <div class="footer-text">
+                <h3>Thank You for Shopping</h3>
+                <p>CONTACT US | <a href="tel:+9875879104">9875879104</a> | <a href="mailto:bridgeus@gmail.com">bridgeus@gmail.com</a></p>
+                <p>All rights reserved © 2025 BRIDGE</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function searchProducts() {
+            const input = document.getElementById("searchInput").value.toLowerCase();
+            const cards = document.querySelectorAll(".product-card");
+            cards.forEach(card => {
+                const title = card.querySelector("h2").innerText.toLowerCase();
+                card.style.display = title.includes(input) ? "" : "none";
+            });
+        }
+    </script>
+
+</body>
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        document.querySelectorAll('.product-grid').forEach(grid => {
+            const cards = grid.querySelectorAll('.product-card');
+            if (cards.length === 1) {
+                grid.style.display = 'flex';
+                grid.style.justifyContent = 'flex-start';
+            }
+        });
+    });
+</script>
+</html>

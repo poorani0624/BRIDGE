@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>India Post - Orders</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+        .header {
+            background-color: #003B46;
+            color: white;
+            padding: 15px;
+            text-align: center;
+        }
+        .container {
+            margin: 20px;
+        }
+        table {
+            width: 100%;
+            margin-top: 20px;
+            border-collapse: collapse;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        th {
+            background-color: #003B46;
+            color: white;
+        }
+        .status {
+            font-weight: bold;
+            padding: 5px;
+            color: white;
+        }
+        .OrderPlaced {
+            background-color: #ffc107;
+        }
+        .Dispatched {
+            background-color: #5bc0de;
+        }
+        .Delivered {
+            background-color: #28a745;
+        }
+        .OrderPlacing {
+            background-color: #f0ad4e;
+        }
+        .status-form {
+            display: inline-block;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header -->
+    <div class="header">
+        <h2>India Post - Orders</h2>
+    </div>
+    <!-- Main Container -->
+    <div class="container">
+        <h3>All Orders</h3>
+        
+        <table>
+            <thead>
+                <tr>
+                    <th>Order ID</th>
+                    <th>Product Name</th>
+                    <th>User Email</th>
+                    <th>Shipping Address</th>
+                    <th>Status</th>
+                    <th>Update Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for order in orders %}
+                    <tr>
+                        <td>#{{ order[1] }}</td>
+                        <td>{{ order[2] }}</td>
+                        <td>{{ order[3] }}</td>
+                        <td>{{ order[4] }}</td>
+                        <td>
+                            <span class="status 
+                            {% if order[5] == 'Order Placed' %}
+                                OrderPlaced
+                            {% elif order[5] == 'Dispatched' %}
+                                Dispatched
+                            {% elif order[5] == 'Delivered' %}
+                                Delivered
+                            {% else %}
+                                OrderPlacing
+                            {% endif %}">
+                                {{ order[5] }}
+                            </span>
+                        </td>
+                        <td>
+                            <!-- Form to update status -->
+                            <form action="{{ url_for('update_status', order_id=order[0]) }}" method="POST" class="status-form">
+                                <select name="new_status" required>
+                                    <option value="Order Placed" {% if order[5] == 'Order Placed' %} selected {% endif %}>Order Placed</option>
+                                    <option value="Dispatched" {% if order[5] == 'Dispatched' %} selected {% endif %}>Dispatched</option>
+                                    <option value="Delivered" {% if order[5] == 'Delivered' %} selected {% endif %}>Delivered</option>
+                                </select>
+                                <button type="submit">Update</button>
+                            </form>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+</body>
+</html>
