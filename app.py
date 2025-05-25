@@ -11,9 +11,8 @@ from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 from collections import defaultdict
 
-
 app = Flask(__name__)
-app.secret_key = 'your_secret_key'
+app.secret_key = os.environ.get("SECRET_KEY")
 app.config['UPLOAD_FOLDER'] = os.path.join('static', 'images')
 
 # Function to get a database connection
@@ -73,9 +72,9 @@ def product_view(product_id):
 
 # Function to send OTP email
 def send_otp_email(email, otp):
-    sender_email = "connectbridge2us@gmail.com"
+    sender_email = os.environ.get("MAIL_USERNAME")
     receiver_email = email
-    password = "jeqp jebn xtle eudq"  # Make sure the password is correct
+    password = os.environ.get("MAIL_PASSWORD")# Make sure the password is correct
     
     msg = MIMEMultipart()
     msg['From'] = sender_email
