@@ -14,8 +14,9 @@ from collections import defaultdict
 app = Flask(__name__)
 app.secret_key = os.environ.get("SECRET_KEY")
 app.config['UPLOAD_FOLDER'] = os.path.join('static', 'images')
-if not os.path.exists('users.db'):
-    import database
+import database
+database.init_db()
+
 # Function to get a database connection
 def get_db():
     conn = sqlite3.connect('users.db')
