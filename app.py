@@ -6,9 +6,7 @@ from contextlib import closing
 from datetime import datetime, timedelta
 import os
 import random
-import smtplib
-from email.mime.text import MIMEText
-from email.mime.multipart import MIMEMultipart
+import requests
 from collections import defaultdict
 
 app = Flask(__name__)
@@ -74,28 +72,29 @@ def product_view(product_id):
 
 # Function to send OTP email
 def send_otp_email(email, otp):
+    api_key = os.environ.get("BREVO_API_KEY")
     sender_email = os.environ.get("MAIL_USERNAME")
-    receiver_email = email
-    password = os.environ.get("MAIL_PASSWORD")# Make sure the password is correct
-    
-    msg = MIMEMultipart()
-    msg['From'] = sender_email
-    msg['To'] = receiver_email
-    msg['Subject'] = 'Your OTP Code'
 
-    body = f"Your OTP code is: {otp}"
-    msg.attach(MIMEText(body, 'plain'))
+    url = "https://api.brevo.com/v3/smtp/email"
+    headers = {
+        "accept": "application/json",
+        "api-key": api_key,
+        "content-type": "application/json"
+    }
+    payload = {
+        "sender": {"name": "Bridge", "email": sender_email},
+        "to": [{"email": email}],
+        "subject": "Your OTP Code",
+        "textContent": f"Your OTP code is: {otp}"
+    }
 
-    try:
-        with smtplib.SMTP('smtp.gmail.com', 587) as server:  # Use Gmail's SMTP server
-            server.starttls()
-            server.login(sender_email, password)
-            print(f"Sending OTP to {email}")  # Debug print
-            text = msg.as_string()
-            server.sendmail(sender_email, receiver_email, text)
-            print(f"Email sent successfully to {email}")  # Debug print
-    except Exception as e:
-        raise Exception("Error sending OTP email") from e  # ⬅️ Raise exception to handle outside
+    response = requests.post(url, json=payload, headers=headers, timeout=10)
+
+    if response.status_code >= 300:
+        print(f"Brevo error {response.status_code}: {response.text}")
+        raise Exception("Error sending OTP email")
+
+    print(f"OTP email sent to {email}")
 
 def insert_user(name, email, phone, password):
     conn = sqlite3.connect('users.db')  # Ensure the correct database is used
@@ -154,7 +153,13 @@ def signup():
             session['phone'] = phone
             session['password'] = generate_password_hash(password)
 
-            send_otp_email(email, otp)
+            try:
+                send_otp_email(email, otp)
+            except Exception as e:
+                print(f"OTP email failed: {e}")
+                flash('Could not send OTP email. Please try again later.', 'danger')
+                return redirect(url_for('signup'))
+
             return redirect(url_for('otp'))
         else:
             flash('Passwords do not match.', 'danger')
